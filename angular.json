@@ -62,6 +62,9 @@
             },
             "development": {
               "buildTarget": "project-crud:build:development"
+            },
+            "options": {
+              "proxyConfig": "src/proxy.conf.json"
             }
           },
           "defaultConfiguration": "development"
