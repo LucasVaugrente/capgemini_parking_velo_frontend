@@ -23,4 +23,8 @@ export class UtilisateurService {
   updateUtilisateur(id: number, utilisateur: Utilisateur): Observable<Utilisateur> {
     return this.http.put<Utilisateur>(`${this.usersUrl}/${id}`, utilisateur);
   }
+
+  supprimerUtilisateur(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.usersUrl}/${id}`);
+  }
 }
