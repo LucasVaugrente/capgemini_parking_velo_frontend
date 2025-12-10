@@ -4,18 +4,22 @@ import { Utilisateur } from '../models/utilisateurDTO';
 import { UtilisateurService } from '../services/utilisateur.service';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import {RouterLink} from "@angular/router";
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmationDialogComponent } from '../components/confirmation-dialog.component';
+import { FormulaireMiseAJourComponent } from '../components/form-update-utilisateur.component';
+import { FormulaireAjoutComponent } from '../components/form-add-utilisateur.component'; // Nouveau composant
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-utilisateur-list',
   standalone: true,
-  imports: [CommonModule, MatTableModule, MatPaginatorModule, RouterLink],
+  imports: [CommonModule, MatTableModule, MatPaginatorModule, MatButtonModule],
   template: `
     <div>
       <div>
 
         <div class="block-btn">
-          <a routerLink="/addUser" class="btn">Ajouter un utilisateur</a>
+          <button mat-raised-button color="primary" (click)="ouvrirFormulaireAjout()">+ Ajouter un utilisateur</button>
         </div>
 
         <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
@@ -45,6 +49,14 @@ import {RouterLink} from "@angular/router";
             <td mat-cell *matCellDef="let utilisateur"> {{ utilisateur.username }} </td>
           </ng-container>
 
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef> Actions </th>
+            <td mat-cell *matCellDef="let utilisateur">
+              <button class="btn-update" (click)="ouvrirFormulaireMiseAJour(utilisateur)">Mettre à jour</button>
+              <button class="btn-delete" (click)="supprimerUtilisateur(utilisateur.id)">Supprimer</button>
+            </td>
+          </ng-container>
+
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
           <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
         </table>
@@ -58,8 +70,6 @@ import {RouterLink} from "@angular/router";
     </div>
   `,
   styles: [`
-
-
     table {
       border-radius: 5px;
       font-size: 12px;
@@ -102,7 +112,8 @@ import {RouterLink} from "@angular/router";
       background-color: #405cf5;
       border-radius: 6px;
       box-shadow: rgba(50, 50, 93, .1) 0 0 0 1px inset, rgba(50, 50, 93, .1) 0 2px 5px 0, rgba(0, 0, 0, .07) 0 1px 1px 0;
-      padding: 15px;
+      padding: 10px;
+      font-size: 13px;
       color: white;
       text-decoration: none;
       width: 150px;
@@ -114,27 +125,103 @@ import {RouterLink} from "@angular/router";
       background-color: #354fdf;
     }
 
+    .btn-delete {
+      background-color: #f44336;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 5px 10px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+
+    .btn-delete:hover {
+      background-color: #d32f2f;
+    }
+
+    .btn-update {
+      background-color: #3984ac;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 5px 10px;
+      cursor: pointer;
+      font-size: 12px;
+      margin-right: 10px;
+    }
+
+    .btn-update:hover {
+      background-color: #2e6f91;
+    }
   `]
 })
+
 export class UtilisateurListComponent implements OnInit, AfterViewInit { // 3. Implémenter AfterViewInit
 
-  displayedColumns: string[] = ['id', 'nom', 'prenom', 'mail', 'username'];
+  displayedColumns: string[] = ['id', 'nom', 'prenom', 'mail', 'username', 'actions'];
 
   dataSource = new MatTableDataSource<Utilisateur>();
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-  constructor(private utilisateurService: UtilisateurService) { }
+  constructor(private dialog: MatDialog, private utilisateurService: UtilisateurService) {}
 
   ngOnInit() {
     this.utilisateurService.getUtilisateurs().subscribe(data => {
-      // 6. Affecter les données à la source de la table
       this.dataSource.data = data;
     });
   }
 
-  // 7. Affecter le paginator à la source de données après l'initialisation de la vue
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
+  }
+
+  ouvrirFormulaireAjout(): void {
+    const dialogRef = this.dialog.open(FormulaireAjoutComponent, {
+      width: '500px',
+    });
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.utilisateurService.addUtilisateur(result).subscribe(() => {
+          this.ngOnInit(); // Rafraîchir la liste
+        });
+      }
+    });
+  }
+
+  ouvrirFormulaireMiseAJour(utilisateur: Utilisateur): void {
+    const dialogRef = this.dialog.open(FormulaireMiseAJourComponent, {
+      data: { utilisateur },
+    });
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.utilisateurService.updateUtilisateur(result.id, result).subscribe({
+          next: (updatedUser) => {
+            const index = this.dataSource.data.findIndex(u => u.id === updatedUser.id);
+            if (index !== -1) {
+              this.dataSource.data[index] = updatedUser;
+              this.dataSource.data = [...this.dataSource.data];
+            }
+          },
+          error: (err) => {
+            console.error("Erreur lors de la mise à jour de l'utilisateur", err);
+          }
+        });
+      }
+    });
+  }
+
+  supprimerUtilisateur(id: number): void {
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      data: { message: 'Êtes-vous sûr de vouloir supprimer cet utilisateur ?' },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.utilisateurService.supprimerUtilisateur(id).subscribe(() => {
+          this.dataSource.data = this.dataSource.data.filter(utilisateur => utilisateur.id !== id);
+        });
+      }
+    });
   }
 }
