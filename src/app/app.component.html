@@ -1,8 +1,7 @@
 <div class="app-container">
 
   <header class="app-header">
-    <h1>{{ title }}</h1>
-    <h2>Reservation Vélo</h2>
+    <app-navbar></app-navbar>
   </header>
 
   <main class="app-main">
@@ -11,18 +10,6 @@
       <div class="container">
         <div class="row">
           <div class="col-md-12">
-            <div class="card bg-dark my-5">
-              <div class="card-body">
-                <ul class="text-center list-inline py-3">
-                  <li class="list-inline-item">
-                    <a routerLink="/users" class="btn btn-info">Lister les utilisateurs</a>
-                  </li>
-                  <li class="list-inline-item">
-                    <a routerLink="/addUser" class="btn btn-info">Ajouter un utilisateur</a>
-                  </li>
-                </ul>
-              </div>
-            </div>
             <router-outlet></router-outlet>
           </div>
         </div>
