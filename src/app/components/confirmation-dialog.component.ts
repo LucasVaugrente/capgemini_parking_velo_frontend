@@ -16,7 +16,7 @@ import {MatButton} from "@angular/material/button";
       <div mat-dialog-content>
         <p>{{ data.message }}</p>
       </div>
-      <div mat-dialog-actions>
+      <div mat-dialog-actions class="actions-container">
         <button mat-button (click)="onCancel()">Annuler</button>
         <button mat-button color="warn" (click)="onConfirm()">Confirmer</button>
       </div>
@@ -32,6 +32,13 @@ import {MatButton} from "@angular/material/button";
   styles: [`
     div {
       padding: 10px;
+    }
+
+    .actions-container {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      padding: 8px 16px 16px;
     }
   `]
 })
