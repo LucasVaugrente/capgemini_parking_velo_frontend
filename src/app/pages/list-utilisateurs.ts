@@ -105,26 +105,6 @@ import { MatButtonModule } from '@angular/material/button';
       margin: 20px;
     }
 
-    .btn {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background-color: #405cf5;
-      border-radius: 6px;
-      box-shadow: rgba(50, 50, 93, .1) 0 0 0 1px inset, rgba(50, 50, 93, .1) 0 2px 5px 0, rgba(0, 0, 0, .07) 0 1px 1px 0;
-      padding: 10px;
-      font-size: 13px;
-      color: white;
-      text-decoration: none;
-      width: 150px;
-      font-weight: bold;
-      transition: 0.2s ease-in-out;
-    }
-
-    .btn:hover {
-      background-color: #354fdf;
-    }
-
     .btn-delete {
       background-color: #f44336;
       color: white;
