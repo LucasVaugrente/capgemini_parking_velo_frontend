@@ -44,9 +44,9 @@ import { MatButtonModule } from '@angular/material/button';
             <td mat-cell *matCellDef="let velo"> {{ velo.quantite }} </td>
           </ng-container>
 
-          <ng-container matColumnDef="coordonnees_id">
+            <ng-container matColumnDef="coordonneesId">
             <th mat-header-cell *matHeaderCellDef> ID Coordonnées </th>
-            <td mat-cell *matCellDef="let velo"> {{ velo.coordonnees_id }} </td>
+            <td mat-cell *matCellDef="let velo"> {{ velo.coordonneesId }} </td>
           </ng-container>
 
           <ng-container matColumnDef="actions">
@@ -136,9 +136,9 @@ import { MatButtonModule } from '@angular/material/button';
   `]
 })
 
-export class VeloListComponent implements OnInit, AfterViewInit { // 3. Implémenter AfterViewInit
+export class VeloListComponent implements OnInit, AfterViewInit {
 
-  displayedColumns: string[] = ['id', 'description', 'nom', 'quantite', 'coordonnees_id', 'actions'];
+  displayedColumns: string[] = ['id', 'description', 'nom', 'quantite', 'coordonneesId', 'actions'];
 
   dataSource = new MatTableDataSource<Velo>();
 
@@ -148,6 +148,7 @@ export class VeloListComponent implements OnInit, AfterViewInit { // 3. Impléme
 
   ngOnInit() {
     this.veloService.getVelos().subscribe(data => {
+      console.log(data)
       this.dataSource.data = data;
     });
   }
@@ -163,7 +164,7 @@ export class VeloListComponent implements OnInit, AfterViewInit { // 3. Impléme
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         this.veloService.addVelo(result).subscribe(() => {
-          this.ngOnInit(); // Rafraîchir la liste
+          this.ngOnInit();
         });
       }
     });
@@ -175,17 +176,10 @@ export class VeloListComponent implements OnInit, AfterViewInit { // 3. Impléme
     });
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        this.veloService.updateVelo(result.id, result).subscribe({
-          next: (updatedVelo) => {
-            const index = this.dataSource.data.findIndex(u => u.id === updatedVelo.id);
-            if (index !== -1) {
-              this.dataSource.data[index] = updatedVelo;
-              this.dataSource.data = [...this.dataSource.data];
-            }
-          },
-          error: (err) => {
-            console.error("Erreur lors de la mise à jour du vélo", err);
-          }
+        this.veloService.updateVelo(velo.id, result).subscribe(() => {
+          this.veloService.getVelos().subscribe(data => {
+            this.dataSource.data = data;
+          });
         });
       }
     });
