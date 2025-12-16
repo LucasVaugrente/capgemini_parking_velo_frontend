@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Velo } from '../models/veloDTO';
+import {Velo, VeloUpdateDTO, VeloCreateDTO} from '../models/veloDTO';
 import {HttpClient} from "@angular/common/http";
 
 @Injectable({
@@ -16,11 +16,11 @@ export class VeloService {
     return this.http.get<Velo[]>(this.usersUrl);
   }
 
-  addVelo(velo: Velo): Observable<Velo> {
+  addVelo(velo: VeloCreateDTO): Observable<Velo> {
     return this.http.post<Velo>(this.usersUrl, velo);
   }
 
-  updateVelo(id: number, velo: Velo): Observable<Velo> {
+  updateVelo(id: number, velo: VeloUpdateDTO): Observable<Velo> {
     return this.http.put<Velo>(`${this.usersUrl}/${id}`, velo);
   }
 
