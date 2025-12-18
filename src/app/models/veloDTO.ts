@@ -3,7 +3,13 @@ export interface Velo {
   nom: string;
   quantite: number;
   description?: string;
-  coordonnees_id: number;
+  coordonneesId: number;
+}
+
+export interface Coordonnees {
+  id: number;
+  latitude: number;
+  longitude: number;
 }
 
 export interface VeloCreateDTO {
