@@ -10,7 +10,7 @@ import { MatCardModule } from '@angular/material/card';
         <mat-card-content>
           <h1>Bienvenue sur l'application de gestion des réservations de vélos !</h1>
           <p>Ici, vous pouvez gérer les utilisateurs, réservations et vélos.</p>
-          <p>Utilisez le menu pour naviguer vers la liste des utilisateurs, résearvations, vélos et même la carte pour localiser.</p>
+          <p>Utilisez le menu pour naviguer vers la liste des utilisateurs, réservations, vélos et même la carte pour localiser.</p>
         </mat-card-content>
       </mat-card>
     </div>
