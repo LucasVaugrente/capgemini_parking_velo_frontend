@@ -5,12 +5,15 @@ import {ReactiveFormsModule} from "@angular/forms";
 import {MapComponent} from "./map/map.component";
 import {HomeComponent} from "./pages/home";
 import {VeloListComponent} from "./pages/list-velos";
+import {LoginComponent} from "./components/LoginComponent";
+import {AuthGuard} from "./guards/auth.guard";
 
 export const routes: Routes = [
+  { path: 'login', component: LoginComponent },
   { path: '', component: HomeComponent }, // Page d'accueil
-  { path: 'users', component: UtilisateurListComponent },
   { path: 'velos', component: VeloListComponent },
   { path: 'map', component: MapComponent },
+  { path: 'users', component: UtilisateurListComponent, canActivate: [AuthGuard] },
   { path: '', redirectTo: '/', pathMatch: 'full' } // Redirection par défaut
 ];
 @NgModule({
