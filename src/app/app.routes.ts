@@ -7,15 +7,25 @@ import {HomeComponent} from "./pages/home";
 import {VeloListComponent} from "./pages/list-velos";
 import {LoginComponent} from "./components/LoginComponent";
 import {AuthGuard} from "./guards/auth.guard";
+import { ReservationComponent } from './components/reservation.component';
+
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
+
   { path: '', component: HomeComponent }, // Page d'accueil
+
   { path: 'velos', component: VeloListComponent, canActivate: [AuthGuard] },
   { path: 'map', component: MapComponent, canActivate: [AuthGuard] },
   { path: 'users', component: UtilisateurListComponent, canActivate: [AuthGuard] },
-  { path: '', redirectTo: '/', pathMatch: 'full' } // Redirection par défaut
+
+  { path: 'reservations', component: ReservationComponent, canActivate: [AuthGuard] },
+
+  { path: '**', redirectTo: '' } // route par défaut (bonne pratique)
 ];
+
+
+
 @NgModule({
   imports: [RouterModule.forRoot(routes), ReactiveFormsModule],
   exports: [RouterModule],
