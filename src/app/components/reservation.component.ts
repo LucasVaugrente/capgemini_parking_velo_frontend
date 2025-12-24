@@ -8,16 +8,18 @@ import { ReservationResponse } from '../models/reservation-response.model';
 @Component({
   selector: 'app-reservation',
   standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule
-  ],
-  templateUrl: './reservation.component.html'
+  imports: [CommonModule, ReactiveFormsModule],
+  templateUrl: './reservation.component.html',
+  styleUrls: ['./reservation.component.css']
 })
 export class ReservationComponent implements OnInit {
 
-  form!: FormGroup;
   reservations: ReservationResponse[] = [];
+  form!: FormGroup;
+
+  showForm = false;
+  isEditMode = false;
+  reservationToEdit: ReservationResponse | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -40,18 +42,54 @@ export class ReservationComponent implements OnInit {
     });
   }
 
+  openCreateForm() {
+    this.form.reset();
+    this.isEditMode = false;
+    this.reservationToEdit = null;
+    this.showForm = true;
+  }
+
+  edit(r: ReservationResponse) {
+    this.isEditMode = true;
+    this.showForm = true;
+    this.reservationToEdit = r;
+
+    this.form.patchValue({
+      utilisateurId: r.utilisateurId,
+      veloId: r.veloId,
+      reservation: r.reservation
+    });
+  }
+
   submit() {
     if (this.form.invalid) return;
 
-    this.reservationService.create(this.form.value).subscribe(() => {
-      this.form.reset();
-      this.loadReservations();
-    });
+    if (this.isEditMode && this.reservationToEdit) {
+      this.reservationService.update(
+        this.reservationToEdit.utilisateurId,
+        this.reservationToEdit.veloId,
+        this.form.value
+      ).subscribe(() => this.afterSave());
+    } else {
+      this.reservationService.create(this.form.value)
+        .subscribe(() => this.afterSave());
+    }
   }
 
   delete(r: ReservationResponse) {
     this.reservationService
       .delete(r.utilisateurId, r.veloId)
       .subscribe(() => this.loadReservations());
+  }
+
+  cancel() {
+    this.showForm = false;
+    this.form.reset();
+  }
+
+  afterSave() {
+    this.showForm = false;
+    this.form.reset();
+    this.loadReservations();
   }
 }

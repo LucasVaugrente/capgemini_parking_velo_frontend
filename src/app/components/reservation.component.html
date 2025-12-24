@@ -1,38 +1,54 @@
-<h2>Créer une réservation</h2>
+<h2>Réservations</h2>
 
-<form [formGroup]="form" (ngSubmit)="submit()">
-  <label>Utilisateur ID</label>
-  <input type="number" formControlName="utilisateurId">
+<button (click)="openCreateForm()">+ Ajouter une réservation</button>
 
-  <label>Vélo ID</label>
-  <input type="number" formControlName="veloId">
+<!-- FORMULAIRE -->
+<div *ngIf="showForm" class="form-container">
+  <h3>{{ isEditMode ? 'Modifier une réservation' : 'Créer une réservation' }}</h3>
 
-  <label>Nombre de réservations</label>
-  <input type="number" formControlName="reservation">
+  <form [formGroup]="form" (ngSubmit)="submit()">
 
-  <button type="submit" [disabled]="form.invalid">
-    Réserver
-  </button>
-</form>
+    <label>Utilisateur ID</label>
+    <input type="number" formControlName="utilisateurId">
+
+    <label>Vélo ID</label>
+    <input type="number" formControlName="veloId">
+
+    <label>Quantité</label>
+    <input type="number" formControlName="reservation">
+
+    <button type="submit">
+      {{ isEditMode ? 'Modifier' : 'Créer' }}
+    </button>
+
+    <button type="button" (click)="cancel()">Annuler</button>
+  </form>
+</div>
 
 <hr>
 
-<h2>Liste des réservations</h2>
+<!-- TABLEAU -->
+<h3>Liste des réservations</h3>
 
 <table border="1">
-  <tr>
-    <th>Utilisateur</th>
-    <th>Vélo</th>
-    <th>Quantité</th>
-    <th>Action</th>
-  </tr>
+  <thead>
+    <tr>
+      <th>Utilisateur</th>
+      <th>Vélo</th>
+      <th>Quantité</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
 
-  <tr *ngFor="let r of reservations">
-    <td>{{ r.utilisateurUsername }}</td>
-    <td>{{ r.veloNom }}</td>
-    <td>{{ r.reservation }}</td>
-    <td>
-      <button (click)="delete(r)">Supprimer</button>
-    </td>
-  </tr>
+  <tbody>
+    <tr *ngFor="let r of reservations">
+      <td>{{ r.utilisateurUsername }}</td>
+      <td>{{ r.veloNom }}</td>
+      <td>{{ r.reservation }}</td>
+      <td>
+        <button (click)="edit(r)">✏️</button>
+        <button (click)="delete(r)">🗑️</button>
+      </td>
+    </tr>
+  </tbody>
 </table>
