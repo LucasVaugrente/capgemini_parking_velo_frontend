@@ -27,7 +27,6 @@ export const routes: Routes = [
 
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes), ReactiveFormsModule],
   exports: [RouterModule],
 })
 export class AppRoutingModule { }

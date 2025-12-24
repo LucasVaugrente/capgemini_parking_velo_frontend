@@ -1,1 +1,38 @@
-<p>reservation works!</p>
+<h2>Créer une réservation</h2>
+
+<form [formGroup]="form" (ngSubmit)="submit()">
+  <label>Utilisateur ID</label>
+  <input type="number" formControlName="utilisateurId">
+
+  <label>Vélo ID</label>
+  <input type="number" formControlName="veloId">
+
+  <label>Nombre de réservations</label>
+  <input type="number" formControlName="reservation">
+
+  <button type="submit" [disabled]="form.invalid">
+    Réserver
+  </button>
+</form>
+
+<hr>
+
+<h2>Liste des réservations</h2>
+
+<table border="1">
+  <tr>
+    <th>Utilisateur</th>
+    <th>Vélo</th>
+    <th>Quantité</th>
+    <th>Action</th>
+  </tr>
+
+  <tr *ngFor="let r of reservations">
+    <td>{{ r.utilisateurUsername }}</td>
+    <td>{{ r.veloNom }}</td>
+    <td>{{ r.reservation }}</td>
+    <td>
+      <button (click)="delete(r)">Supprimer</button>
+    </td>
+  </tr>
+</table>
