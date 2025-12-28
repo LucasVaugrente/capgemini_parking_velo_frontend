@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ReservationResponse } from '../models/reservation-response.model';
+import { ReservationCreate } from '../models/reservation-create.model';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class ReservationService {
 
   private apiUrl = 'http://localhost:8080/api/reservations';
@@ -15,15 +14,8 @@ export class ReservationService {
     return this.http.get<ReservationResponse[]>(this.apiUrl);
   }
 
-  create(data: any) {
+  create(data: ReservationCreate) {
     return this.http.post(this.apiUrl, data);
-  }
-
-  update(utilisateurId: number, veloId: number, data: any) {
-    return this.http.put(
-      `${this.apiUrl}/utilisateur/${utilisateurId}/velo/${veloId}`,
-      data
-    );
   }
 
   delete(utilisateurId: number, veloId: number) {

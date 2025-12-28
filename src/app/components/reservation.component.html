@@ -1,54 +1,32 @@
-<h2>Réservations</h2>
+<button mat-raised-button color="primary" (click)="openAddDialog()">
+  + Ajouter une réservation
+</button>
 
-<button (click)="openCreateForm()">+ Ajouter une réservation</button>
+<table mat-table [dataSource]="reservations" class="mat-elevation-z2">
 
-<!-- FORMULAIRE -->
-<div *ngIf="showForm" class="form-container">
-  <h3>{{ isEditMode ? 'Modifier une réservation' : 'Créer une réservation' }}</h3>
+  <ng-container matColumnDef="utilisateur">
+    <th mat-header-cell *matHeaderCellDef> Utilisateur </th>
+    <td mat-cell *matCellDef="let r"> {{ r.utilisateurUsername }} </td>
+  </ng-container>
 
-  <form [formGroup]="form" (ngSubmit)="submit()">
+  <ng-container matColumnDef="velo">
+    <th mat-header-cell *matHeaderCellDef> Vélo </th>
+    <td mat-cell *matCellDef="let r"> {{ r.veloNom }} </td>
+  </ng-container>
 
-    <label>Utilisateur ID</label>
-    <input type="number" formControlName="utilisateurId">
+  <ng-container matColumnDef="quantite">
+    <th mat-header-cell *matHeaderCellDef> Quantité </th>
+    <td mat-cell *matCellDef="let r"> {{ r.reservation }} </td>
+  </ng-container>
 
-    <label>Vélo ID</label>
-    <input type="number" formControlName="veloId">
+  <ng-container matColumnDef="actions">
+    <th mat-header-cell *matHeaderCellDef> Actions </th>
+    <td mat-cell *matCellDef="let r">
+      <button mat-button color="warn" (click)="delete(r)">Supprimer</button>
+    </td>
+  </ng-container>
 
-    <label>Quantité</label>
-    <input type="number" formControlName="reservation">
+  <tr mat-header-row *matHeaderRowDef="['utilisateur','velo','quantite','actions']"></tr>
+  <tr mat-row *matRowDef="let row; columns: ['utilisateur','velo','quantite','actions'];"></tr>
 
-    <button type="submit">
-      {{ isEditMode ? 'Modifier' : 'Créer' }}
-    </button>
-
-    <button type="button" (click)="cancel()">Annuler</button>
-  </form>
-</div>
-
-<hr>
-
-<!-- TABLEAU -->
-<h3>Liste des réservations</h3>
-
-<table border="1">
-  <thead>
-    <tr>
-      <th>Utilisateur</th>
-      <th>Vélo</th>
-      <th>Quantité</th>
-      <th>Actions</th>
-    </tr>
-  </thead>
-
-  <tbody>
-    <tr *ngFor="let r of reservations">
-      <td>{{ r.utilisateurUsername }}</td>
-      <td>{{ r.veloNom }}</td>
-      <td>{{ r.reservation }}</td>
-      <td>
-        <button (click)="edit(r)">✏️</button>
-        <button (click)="delete(r)">🗑️</button>
-      </td>
-    </tr>
-  </tbody>
 </table>
