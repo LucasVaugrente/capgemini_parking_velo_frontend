@@ -1,28 +1,34 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatTableModule } from '@angular/material/table';
+import { MatTableModule, MatTableDataSource } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialogModule } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 
 import { ReservationService } from '../services/reservation.service';
 import { ReservationResponse } from '../models/reservation-response.model';
-import { MatDialog } from '@angular/material/dialog';
 import { FormAddReservationComponent } from './form-add-reservation.component';
+import { FormUpdateReservationComponent } from './form-update-reservation.component';
 
 @Component({
   selector: 'app-reservation',
-  standalone: true, 
+  standalone: true,
   imports: [
     CommonModule,
-    MatTableModule,    
+    MatTableModule,
     MatButtonModule,
-    MatDialogModule
+    MatDialogModule,
+    MatPaginatorModule
   ],
-  templateUrl: './reservation.component.html'
+  templateUrl: './reservation.component.html',
+  styleUrls: ['./reservation.component.css']
 })
 export class ReservationComponent implements OnInit {
 
-  reservations: ReservationResponse[] = [];
+  displayedColumns: string[] = ['utilisateur', 'velo', 'quantite', 'actions'];
+  dataSource = new MatTableDataSource<ReservationResponse>();
+
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   constructor(
     private reservationService: ReservationService,
@@ -33,15 +39,14 @@ export class ReservationComponent implements OnInit {
     this.loadReservations();
   }
 
-loadReservations() {
-  this.reservationService.getAll().subscribe(data => {
-    console.log('DATA BACKEND:', data);
-    this.reservations = data;
-  });
-}
+  loadReservations(): void {
+    this.reservationService.getAll().subscribe(data => {
+      this.dataSource.data = data;
+      this.dataSource.paginator = this.paginator;
+    });
+  }
 
-
-  openAddDialog() {
+  openAddDialog(): void {
     this.dialog.open(FormAddReservationComponent, {
       width: '500px'
     }).afterClosed().subscribe(result => {
@@ -52,7 +57,27 @@ loadReservations() {
     });
   }
 
-  delete(r: ReservationResponse) {
+openEditDialog(r: ReservationResponse) {
+  this.dialog.open(FormUpdateReservationComponent, {
+    width: '400px',
+    data: r
+  }).afterClosed().subscribe(result => {
+    if (result) {
+      this.reservationService.update(
+        r.utilisateurId,
+        r.veloId,
+        {
+          utilisateurId: r.utilisateurId,
+          veloId: r.veloId,
+          reservation: result.reservation
+        }
+      ).subscribe(() => this.loadReservations());
+    }
+  });
+}
+
+
+  delete(r: ReservationResponse): void {
     this.reservationService
       .delete(r.utilisateurId, r.veloId)
       .subscribe(() => this.loadReservations());

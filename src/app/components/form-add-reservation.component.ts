@@ -1,10 +1,16 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
-import { NgIf } from '@angular/common';
+import { NgFor, NgIf } from '@angular/common';
+
+import { UtilisateurService } from '../services/utilisateur.service';
+import { VeloService } from '../services/velo.service';
+import { Utilisateur } from '../models/utilisateurDTO';
+import { Velo } from '../models/veloDTO';
 
 @Component({
   selector: 'app-form-add-reservation',
@@ -15,16 +21,27 @@ import { NgIf } from '@angular/common';
     <div mat-dialog-content>
       <form [formGroup]="form" class="form-container">
 
+        <!-- Utilisateur -->
         <mat-form-field class="full-width">
-          <mat-label>ID Utilisateur</mat-label>
-          <input matInput type="number" formControlName="utilisateurId">
+          <mat-label>Utilisateur</mat-label>
+          <mat-select formControlName="utilisateurId">
+            <mat-option *ngFor="let u of utilisateurs" [value]="u.id">
+              {{ u.username }}
+            </mat-option>
+          </mat-select>
         </mat-form-field>
 
+        <!-- Vélo -->
         <mat-form-field class="full-width">
-          <mat-label>ID Vélo</mat-label>
-          <input matInput type="number" formControlName="veloId">
+          <mat-label>Vélo</mat-label>
+          <mat-select formControlName="veloId">
+            <mat-option *ngFor="let v of velos" [value]="v.id">
+              {{ v.nom }}
+            </mat-option>
+          </mat-select>
         </mat-form-field>
 
+        <!-- Quantité -->
         <mat-form-field class="full-width">
           <mat-label>Quantité</mat-label>
           <input matInput type="number" formControlName="reservation">
@@ -58,23 +75,44 @@ import { NgIf } from '@angular/common';
   imports: [
     ReactiveFormsModule,
     MatFormFieldModule,
+    MatSelectModule,
     MatInputModule,
     MatButtonModule,
+    NgFor,
     NgIf
   ]
 })
-export class FormAddReservationComponent {
+export class FormAddReservationComponent implements OnInit {
 
-  form: FormGroup;
+  form!: FormGroup;
+
+  utilisateurs: Utilisateur[] = [];
+  velos: Velo[] = [];
 
   constructor(
     private fb: FormBuilder,
-    private dialogRef: MatDialogRef<FormAddReservationComponent>
-  ) {
+    private dialogRef: MatDialogRef<FormAddReservationComponent>,
+    private utilisateurService: UtilisateurService,
+    private veloService: VeloService
+  ) {}
+
+  ngOnInit(): void {
     this.form = this.fb.group({
       utilisateurId: ['', Validators.required],
       veloId: ['', Validators.required],
       reservation: [1, [Validators.required, Validators.min(1)]]
+    });
+
+    this.loadData();
+  }
+
+  loadData() {
+    this.utilisateurService.getUtilisateurs().subscribe(data => {
+      this.utilisateurs = data;
+    });
+
+    this.veloService.getVelos().subscribe(data => {
+      this.velos = data;
     });
   }
 
@@ -84,6 +122,7 @@ export class FormAddReservationComponent {
 
   onSubmit() {
     if (this.form.valid) {
+      // ⬇️ On renvoie toujours les IDs au backend
       this.dialogRef.close(this.form.value);
     }
   }

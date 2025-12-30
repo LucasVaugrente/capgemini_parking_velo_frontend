@@ -18,6 +18,13 @@ export class ReservationService {
     return this.http.post(this.apiUrl, data);
   }
 
+  update(utilisateurId: number, veloId: number, data: Partial<ReservationCreate>) {
+    return this.http.put(
+      `${this.apiUrl}/utilisateur/${utilisateurId}/velo/${veloId}`,
+      data
+    );
+  }
+
   delete(utilisateurId: number, veloId: number) {
     return this.http.delete(
       `${this.apiUrl}/utilisateur/${utilisateurId}/velo/${veloId}`
