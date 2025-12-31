@@ -24,7 +24,7 @@ import { MatButton } from "@angular/material/button";
     MatButton
   ],
   template: `
-    <h1 mat-dialog-title>Modifier la réservation</h1>
+    <h1 mat-dialog-title>Mettre à jour la réservation</h1>
 
     <div mat-dialog-content>
       <form [formGroup]="form" class="form-container">
@@ -41,7 +41,7 @@ import { MatButton } from "@angular/material/button";
 
         <mat-form-field class="full-width">
           <mat-label>Quantité</mat-label>
-          <input matInput type="number" formControlName="reservation">
+          <input matInput type="number" formControlName="reservation" required>
         </mat-form-field>
 
       </form>
@@ -49,8 +49,13 @@ import { MatButton } from "@angular/material/button";
 
     <div mat-dialog-actions class="actions-container">
       <button mat-button (click)="onCancel()">Annuler</button>
-      <button mat-button color="primary" [disabled]="form.invalid" (click)="onSubmit()">
-        Valider
+      <button
+        mat-button
+        color="primary"
+        [disabled]="form.invalid"
+        (click)="onSubmit()"
+      >
+        Mettre à jour
       </button>
     </div>
   `,
@@ -60,15 +65,18 @@ import { MatButton } from "@angular/material/button";
       flex-direction: column;
       gap: 16px;
       padding: 16px;
-      width: 400px;
+      width: 500px;   /* ✅ EXACTEMENT comme update vélo */
     }
+
     .full-width {
       width: 100%;
     }
+
     .actions-container {
       display: flex;
       justify-content: flex-end;
       gap: 8px;
+      padding: 8px 16px 16px; /* ✅ padding IDENTIQUE */
     }
   `]
 })
@@ -82,15 +90,18 @@ export class FormUpdateReservationComponent {
     private fb: FormBuilder
   ) {
     this.form = this.fb.group({
-      reservation: [data.reservation, [Validators.required, Validators.min(1)]]
+      reservation: [
+        data.reservation,
+        [Validators.required, Validators.min(1)]
+      ]
     });
   }
 
-  onCancel() {
+  onCancel(): void {
     this.dialogRef.close();
   }
 
-  onSubmit() {
+  onSubmit(): void {
     if (this.form.valid) {
       this.dialogRef.close(this.form.value);
     }
