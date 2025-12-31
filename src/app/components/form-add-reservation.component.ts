@@ -122,7 +122,6 @@ export class FormAddReservationComponent implements OnInit {
 
   onSubmit() {
     if (this.form.valid) {
-      // ⬇️ On renvoie toujours les IDs au backend
       this.dialogRef.close(this.form.value);
     }
   }
