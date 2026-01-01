@@ -8,7 +8,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
 
 import { AppComponent } from './app.component';
-import { ReservationComponent } from './components/reservation.component';
+import { ReservationComponent } from './pages/list-reservation';
 
 @NgModule({
   declarations: [

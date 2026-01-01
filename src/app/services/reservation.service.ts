@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { ReservationResponse } from '../models/reservation-response.model';
-import { ReservationCreate } from '../models/reservation-create.model';
+import { ReservationResponse } from '../models/reservation-responseDTO';
+import { ReservationCreate } from '../models/reservation-createDTO';
 
 @Injectable({ providedIn: 'root' })
 export class ReservationService {

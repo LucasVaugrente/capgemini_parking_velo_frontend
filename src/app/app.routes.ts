@@ -7,7 +7,7 @@ import {HomeComponent} from "./pages/home";
 import {VeloListComponent} from "./pages/list-velos";
 import {LoginComponent} from "./components/LoginComponent";
 import {AuthGuard} from "./guards/auth.guard";
-import { ReservationComponent } from './components/reservation.component';
+import { ReservationComponent } from './pages/list-reservation';
 
 
 export const routes: Routes = [

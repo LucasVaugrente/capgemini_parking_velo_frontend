@@ -1,4 +1,5 @@
 export interface ReservationResponse {
+  id?: number;
   utilisateurId: number;
   utilisateurUsername: string;
 
